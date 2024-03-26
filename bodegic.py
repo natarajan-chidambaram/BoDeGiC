@@ -281,18 +281,30 @@ predict the type of identities. At least 10 commits is required for each identit
     prediction_progress.close()
 
     if only_predicted == True:
-        result = result.append(  
-            (
-                comments[lambda x: ~x['author'].isin(result[identity_type])][['author','body']]
-                .groupby('author', as_index=False)
-                .count()
-                .assign(
-                    patterns=np.nan,
-                    dispersion=np.nan,
-                    prediction="Unknown",
-                )
-                .rename(columns={'author':identity_type,'body':'messages'})
-            ),ignore_index=True,sort=True)
+        current_result = (
+            comments[lambda x: ~x['author'].isin(result[identity_type])][['author','body']]
+            .groupby('author', as_index=False)
+            .count()
+            .assign(
+                patterns=np.nan,
+                dispersion=np.nan,
+                prediction="Unknown",
+            )
+            .rename(columns={'author':identity_type,'body':'messages'})
+        )
+        result = pd.concat([result, current_result],ignore_index=True,sort=True)
+        # result = result.append( 
+        #     (
+        #         comments[lambda x: ~x['author'].isin(result[identity_type])][['author','body']]
+        #         .groupby('author', as_index=False)
+        #         .count()
+        #         .assign(
+        #             patterns=np.nan,
+        #             dispersion=np.nan,
+        #             prediction="Unknown",
+        #         )
+        #         .rename(columns={'author':identity_type,'body':'messages'})
+        #     ),ignore_index=True,sort=True)
         
         for identity in (set(include) - set(result[identity_type])):
             result = result.append({
