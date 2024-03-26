@@ -64,14 +64,14 @@ def process_comments(repositories, mapping ,committer, date, min_commits, max_co
             if author.lower() != 'ignore' and identity.lower() == 'ignore':
                 continue
 
-            current_comment = pd.DataFrame.from_dict({
+            current_comment = pandas.DataFrame.from_dict({
                         'author': [identity],
                         'body': [commit.message[:-1] if commit.message.endswith('\n') else commit.message],
                         'repository': [repository],
                         'created_at': [datetime.date.fromtimestamp(commit.authored_date)],
                         'type': ['gitmsg'],
                     })
-            comments = pd.concat([comments, current_comment],ignore_index=True,sort=True)
+            comments = pandas.concat([comments, current_comment],ignore_index=True,sort=True)
             # comments = comments.append({
             #             'author': identity,
             #             'body': commit.message[:-1] if commit.message.endswith('\n') else commit.message,
@@ -292,7 +292,7 @@ predict the type of identities. At least 10 commits is required for each identit
             )
             .rename(columns={'author':identity_type,'body':'messages'})
         )
-        result = pd.concat([result, current_result],ignore_index=True,sort=True)
+        result = pandas.concat([result, current_result],ignore_index=True,sort=True)
         # result = result.append( 
         #     (
         #         comments[lambda x: ~x['author'].isin(result[identity_type])][['author','body']]
@@ -307,14 +307,14 @@ predict the type of identities. At least 10 commits is required for each identit
         #     ),ignore_index=True,sort=True)
         
         for identity in (set(include) - set(result[identity_type])):
-            temp_result = pd.DataFrame.from_dict({
+            temp_result = pandas.DataFrame.from_dict({
                 identity_type: [identity],
                 'messages':[np.nan],
                 'patterns':[np.nan],
                 'dispersion':[np.nan],
                 'prediction':["Not found"],
             })
-            result = pd.concat([result, temp_result],ignore_index=True,sort=True)
+            result = pandas.concat([result, temp_result],ignore_index=True,sort=True)
             # result = result.append({
             #     identity_type: identity,
             #     'messages':np.nan,
