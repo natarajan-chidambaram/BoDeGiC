@@ -307,13 +307,21 @@ predict the type of identities. At least 10 commits is required for each identit
         #     ),ignore_index=True,sort=True)
         
         for identity in (set(include) - set(result[identity_type])):
-            result = result.append({
-                identity_type: identity,
-                'messages':np.nan,
-                'patterns':np.nan,
-                'dispersion':np.nan,
-                'prediction':"Not found",
-            },ignore_index=True,sort=True)
+            temp_result = pd.DataFrame.from_dict({
+                identity_type: [identity],
+                'messages':[np.nan],
+                'patterns':[np.nan],
+                'dispersion':[np.nan],
+                'prediction':["Not found"],
+            })
+            result = pd.concat([result, temp_result],ignore_index=True,sort=True)
+            # result = result.append({
+            #     identity_type: identity,
+            #     'messages':np.nan,
+            #     'patterns':np.nan,
+            #     'dispersion':np.nan,
+            #     'prediction':"Not found",
+            # },ignore_index=True,sort=True)
     
     if verbose is False:
         result = result.set_index(identity_type)[['prediction']]
