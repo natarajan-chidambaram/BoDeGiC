@@ -64,13 +64,21 @@ def process_comments(repositories, mapping ,committer, date, min_commits, max_co
             if author.lower() != 'ignore' and identity.lower() == 'ignore':
                 continue
 
-            comments = comments.append({
-                        'author': identity,
-                        'body': commit.message[:-1] if commit.message.endswith('\n') else commit.message,
-                        'repository': repository,
-                        'created_at': datetime.date.fromtimestamp(commit.authored_date),
-                        'type': 'gitmsg',
-                    }, ignore_index=True,sort=True)
+            current_comment = pd.DataFrame.from_dict({
+                        'author': [identity],
+                        'body': [commit.message[:-1] if commit.message.endswith('\n') else commit.message],
+                        'repository': [repository],
+                        'created_at': [datetime.date.fromtimestamp(commit.authored_date)],
+                        'type': ['gitmsg'],
+                    })
+            comments = pd.concat([comments, current_comment],ignore_index=True,sort=True)
+            # comments = comments.append({
+            #             'author': identity,
+            #             'body': commit.message[:-1] if commit.message.endswith('\n') else commit.message,
+            #             'repository': repository,
+            #             'created_at': datetime.date.fromtimestamp(commit.authored_date),
+            #             'type': 'gitmsg',
+            #         }, ignore_index=True,sort=True)
         
     comments = comments.assign(empty = 0)
 
